@@ -4,12 +4,12 @@
 namespace hu\lokilevente\WpMigrator;
 
 
-class Connection {
+abstract class Connection {
 
    /**
-    * @var Instance
+    * @var Migrator
     */
-   private $instance;
+   protected $migrator;
 
    /**
     * @var string
@@ -27,37 +27,30 @@ class Connection {
    private $sqlFileName;
 
    /**
-    * @var string
+    * @param Migrator $migrator
     */
-   private $tablePrefix;
-
-   /**
-    * @param Instance $instance
-    * @param $tablePrefix string
-    */
-   public function __construct(Instance $instance, $tablePrefix) {
-      $this->instance = $instance;
-      $this->tablePrefix = $tablePrefix;
+   public function __construct(Migrator $migrator) {
+      $this->migrator = $migrator;
       $this->curl = new Curl();
 
-      $dom = new DOMParser($this->curl->get($this->instance->getPhpMyAdminUrl()));
+      $dom = new DOMParser($this->curl->get($this->getInstance()->getPhpMyAdminUrl()));
       $this->token = $dom->getInputValue('token');
    }
 
    public function exportSql() {
       $dom = new DOMParser($this->curl->post(
-            $this->instance->getPhpMyAdminUrl() . 'db_export.php?db=' . $this->instance->getDatabase(),
+            $this->getInstance()->getPhpMyAdminUrl() . 'db_export.php?db=' . $this->getInstance()->getDatabase(),
             array(
-               'pma_username' => $this->instance->getUserName(),
-               'pma_password' => $this->instance->getPassword(),
+               'pma_username' => $this->getInstance()->getUserName(),
+               'pma_password' => $this->getInstance()->getPassword(),
             )
          ));
-      $tableList = $dom->getPrefixedTableList($this->tablePrefix);
+      $tableList = $dom->getPrefixedTableList($this->migrator->getTablePrefix());
 
       $resp = $this->curl->post(
-            $this->instance->getPhpMyAdminUrl() . 'export.php',
+            $this->getInstance()->getPhpMyAdminUrl() . 'export.php',
             http_build_query(array(
-               'db' => $this->instance->getDatabase(),
+               'db' => $this->getInstance()->getDatabase(),
                'token' => $this->token,
                'export_type' => 'database',
                'export_method' => 'quick',
@@ -82,7 +75,7 @@ class Connection {
             ))
          );
 
-      $sql = str_replace($this->instance->getWpUrl(), $this->instance->getWpUrl(), $resp);
+      $sql = str_replace($this->migrator->getSource()->getWpUrl(), $this->migrator->getTarget()->getWpUrl(), $resp);
 
       $this->sqlFileName = dirname(__FILE__) . '\..\..\..\..' .
          DIRECTORY_SEPARATOR . 'sql' . DIRECTORY_SEPARATOR . 'wpm_sql_' . uniqid() . '.sql';
@@ -94,17 +87,17 @@ class Connection {
     */
    public function loadSql($sqlFileName) {
       $this->curl->post(
-         $this->instance->getPhpMyAdminUrl() . "server_import.php",
+         $this->getInstance()->getPhpMyAdminUrl() . "server_import.php",
          array(
-            'pma_username' => $this->instance->getUserName(),
-            'pma_password' => $this->instance->getPassword(),
+            'pma_username' => $this->getInstance()->getUserName(),
+            'pma_password' => $this->getInstance()->getPassword(),
          )
       );
 
       $this->curl->post(
-         $this->instance->getPhpMyAdminUrl() . "import.php",
+         $this->getInstance()->getPhpMyAdminUrl() . "import.php",
          array(
-            'db' => $this->instance->getDatabase(),
+            'db' => $this->getInstance()->getDatabase(),
             'token' => $this->token,
             'import_type' => 'database',
             'charset_of_file' => 'utf-8',
@@ -118,6 +111,11 @@ class Connection {
       );
 
    }
+
+   /**
+    * @return Instance
+    */
+   abstract protected function getInstance();
 
    /**
     * @return string

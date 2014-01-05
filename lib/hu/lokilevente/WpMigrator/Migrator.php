@@ -28,13 +28,34 @@ class Migrator {
    }
 
    public function migrate() {
-      $src = new Connection($this->source, $this->tablePrefix);
+      $src = new SourceConnection($this);
       $src->exportSql();
 
-      $trgt = new Connection($this->target, $this->tablePrefix);
+      $trgt = new TargetConnection($this);
       $trgt->loadSql($src->getSqlFileName());
 
       unlink($src->getSqlFileName());
    }
 
-} 
+   /**
+    * @return \hu\lokilevente\WpMigrator\Instance
+    */
+   public function getTarget() {
+      return $this->target;
+   }
+
+   /**
+    * @return string
+    */
+   public function getTablePrefix() {
+      return $this->tablePrefix;
+   }
+
+   /**
+    * @return \hu\lokilevente\WpMigrator\Instance
+    */
+   public function getSource() {
+      return $this->source;
+   }
+
+}
