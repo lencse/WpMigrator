@@ -11,9 +11,9 @@ class TargetConnection extends Connection{
    }
 
    /**
-    * @param $sqlFileName string
+    * @param SqlFile $sql
     */
-   public function loadSql($sqlFileName) {
+   public function loadSql(SqlFile $sql) {
       $this->curl->post(
          $this->getInstance()->getPhpMyAdminUrl() . "server_import.php",
          $this->getLoginArray()
@@ -31,7 +31,7 @@ class TargetConnection extends Connection{
             'format' => 'sql',
             'sql_compatibility' => 'NONE',
             'sql_no_auto_value_on_zero' => 'something',
-            'import_file' => '@' . $sqlFileName,
+            'import_file' => '@' . $sql->getFileName(),
          )
       );
    }

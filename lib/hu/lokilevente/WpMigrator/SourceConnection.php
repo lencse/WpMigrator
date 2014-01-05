@@ -6,6 +6,9 @@ namespace hu\lokilevente\WpMigrator;
 
 class SourceConnection extends Connection{
 
+   /**
+    * @return SqlFile
+    */
    public function exportSql() {
       $dom = new DOMParser($this->curl->post(
          $this->getInstance()->getPhpMyAdminUrl() . 'db_export.php?db=' . $this->getInstance()->getDatabase(),
@@ -42,10 +45,7 @@ class SourceConnection extends Connection{
       );
 
       $sql = str_replace($this->migrator->getSource()->getWpUrl(), $this->migrator->getTarget()->getWpUrl(), $resp);
-
-      $this->sqlFileName = dirname(__FILE__) . '\..\..\..\..' .
-         DIRECTORY_SEPARATOR . 'sql' . DIRECTORY_SEPARATOR . 'wpm_sql_' . uniqid() . '.sql';
-      file_put_contents($this->sqlFileName, $sql);
+      return new SqlFile($sql);
    }
 
 

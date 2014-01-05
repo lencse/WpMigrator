@@ -22,11 +22,6 @@ abstract class Connection {
    protected $curl;
 
    /**
-    * @var string
-    */
-   protected $sqlFileName;
-
-   /**
     * @param Migrator $migrator
     */
    public function __construct(Migrator $migrator) {

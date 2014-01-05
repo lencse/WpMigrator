@@ -29,12 +29,9 @@ class Migrator {
 
    public function migrate() {
       $src = new SourceConnection($this);
-      $src->exportSql();
-
+      $sql = $src->exportSql();
       $trgt = new TargetConnection($this);
-      $trgt->loadSql($src->getSqlFileName());
-
-      unlink($src->getSqlFileName());
+      $trgt->loadSql($sql);
    }
 
    /**
