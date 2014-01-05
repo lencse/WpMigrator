@@ -10,10 +10,10 @@ class Curl {
 
    public function __construct() {
       $this->curl = curl_init();
-      curl_setopt($this->curl, CURLOPT_RETURNTRANSFER, true);
-      curl_setopt($this->curl, CURLOPT_HEADER, false);
-      curl_setopt($this->curl, CURLOPT_FOLLOWLOCATION, true);
-      curl_setopt($this->curl, CURLOPT_COOKIEFILE, dirname(__FILE__) . DIRECTORY_SEPARATOR . 'cookie_dir' .
+      $this->setOption(CURLOPT_RETURNTRANSFER, true);
+      $this->setOption(CURLOPT_HEADER, false);
+      $this->setOption(CURLOPT_FOLLOWLOCATION, true);
+      $this->setOption(CURLOPT_COOKIEFILE, dirname(__FILE__) . DIRECTORY_SEPARATOR . 'cookie_dir' .
          DIRECTORY_SEPARATOR . 'wpm_cookie_' . uniqid());
    }
 
@@ -22,8 +22,8 @@ class Curl {
     * @return mixed
     */
    public function get($url) {
-      curl_setopt($this->curl, CURLOPT_URL, $url);
-      curl_setopt($this->curl, CURLOPT_HTTPGET, true);
+      $this->setOption(CURLOPT_URL, $url);
+      $this->setOption(CURLOPT_HTTPGET, true);
       return curl_exec($this->curl);
    }
 
@@ -33,11 +33,15 @@ class Curl {
     * @return mixed
     */
    public function post($url, $params) {
-      curl_setopt($this->curl, CURLOPT_URL, $url);
-      curl_setopt($this->curl, CURLOPT_POST, true);
-      curl_setopt($this->curl, CURLOPT_POSTFIELDS, $params);
+      $this->setOption(CURLOPT_URL, $url);
+      $this->setOption(CURLOPT_POST, true);
+      $this->setOption(CURLOPT_POSTFIELDS, $params);
       return curl_exec($this->curl);
-  }
+   }
+
+   private function setOption($option, $value) {
+      curl_setopt($this->curl, $option, $value);
+   }
 
    function __destruct() {
       curl_close($this->curl);
