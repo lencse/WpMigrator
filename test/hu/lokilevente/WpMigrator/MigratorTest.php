@@ -4,7 +4,7 @@
 namespace hu\lokilevente\WpMigrator;
 
 
-class WpMigratorTest extends \PHPUnit_Framework_TestCase {
+class MigratorTest extends \PHPUnit_Framework_TestCase {
 
    public function testMigration() {
       $postTitle = 'Hello world! - ' . uniqid('', true);
@@ -12,7 +12,21 @@ class WpMigratorTest extends \PHPUnit_Framework_TestCase {
       $db = new \PDO('mysql:host=localhost;dbname=kahuna', 'lencse', 'lencse');
       $db->exec("UPDATE wptest_posts SET post_title = '$postTitle' WHERE id = 1");
 
-      $wpm = new WpMigrator();
+      $source = new Instance(
+         'http://phpmyadmin.local/',
+         'http://localhost/wordpress',
+         'kahuna',
+         'lencse',
+         'lencse'
+      );
+      $target = new Instance(
+         'http://phpmyadmin.local/',
+         'http://localhost/wordpress2',
+         'test',
+         'lencse',
+         'lencse'
+      );
+      $wpm = new Migrator($source, $target);
       $wpm->migrate();
 
       $db = new \PDO('mysql:host=localhost;dbname=test', 'lencse', 'lencse');

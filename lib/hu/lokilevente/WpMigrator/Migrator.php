@@ -4,7 +4,23 @@
 namespace hu\lokilevente\WpMigrator;
 
 
-class WpMigrator {
+class Migrator {
+
+   /**
+    * @var Instance
+    */
+   private $source;
+
+   /**
+    * @var Instance
+    */
+   private $target;
+
+   function __construct($source, $target)
+   {
+      $this->source = $source;
+      $this->target = $target;
+   }
 
    public function migrate() {
       $sourcePhpMyAdminUrl = 'http://phpmyadmin.local/';
