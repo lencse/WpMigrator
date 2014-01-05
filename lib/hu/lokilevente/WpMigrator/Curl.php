@@ -13,8 +13,8 @@ class Curl {
       $this->setOption(CURLOPT_RETURNTRANSFER, true);
       $this->setOption(CURLOPT_HEADER, false);
       $this->setOption(CURLOPT_FOLLOWLOCATION, true);
-      $this->setOption(CURLOPT_COOKIEFILE, dirname(__FILE__) . DIRECTORY_SEPARATOR . 'cookie_dir' .
-         DIRECTORY_SEPARATOR . 'wpm_cookie_' . uniqid());
+      $this->setOption(CURLOPT_COOKIEFILE, dirname(__FILE__) . str_repeat(DIRECTORY_SEPARATOR . '..', 4) .
+         DIRECTORY_SEPARATOR . 'cookie_dir' . DIRECTORY_SEPARATOR . 'wpm_cookie_' . uniqid());
    }
 
    /**
