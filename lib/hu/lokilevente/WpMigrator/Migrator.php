@@ -16,17 +16,20 @@ class Migrator {
     */
    private $target;
 
-   function __construct($source, $target) {
+   /**
+    * @var string
+    */
+   private $tablePrefix;
+
+   function __construct($source, $target, $tablePrefix) {
       $this->source = $source;
       $this->target = $target;
+      $this->tablePrefix = $tablePrefix;
    }
 
    public function migrate() {
       $source = $this->source;
       $target = $this->target;
-
-      $tablePrefix = 'wptest_';
-
 
       libxml_use_internal_errors(true);
 
@@ -61,7 +64,7 @@ class Migrator {
 
       $tableList = [];
       foreach ($doc->getElementById('table_select')->getElementsByTagName('option') as $option) {
-         if (preg_match('/^' . $tablePrefix . '/i', $option->getAttribute('value'))) {
+         if (preg_match('/^' . $this->tablePrefix . '/i', $option->getAttribute('value'))) {
             $tableList[] = $option->getAttribute('value');
          }
       }

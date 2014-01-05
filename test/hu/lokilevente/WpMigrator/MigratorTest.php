@@ -7,7 +7,7 @@ namespace hu\lokilevente\WpMigrator;
 class MigratorTest extends \PHPUnit_Framework_TestCase {
 
    public function testMigration() {
-      $postTitle = 'Hello world! - ' . uniqid('', true);
+      $postTitle = 'Hello world! - ' . uniqid();
 
       $db = new \PDO('mysql:host=localhost;dbname=kahuna', 'lencse', 'lencse');
       $db->exec("UPDATE wptest_posts SET post_title = '$postTitle' WHERE id = 1");
@@ -26,7 +26,7 @@ class MigratorTest extends \PHPUnit_Framework_TestCase {
          'lencse',
          'lencse'
       );
-      $wpm = new Migrator($source, $target);
+      $wpm = new Migrator($source, $target, 'wptest_');
       $wpm->migrate();
 
       $db = new \PDO('mysql:host=localhost;dbname=test', 'lencse', 'lencse');
@@ -34,7 +34,7 @@ class MigratorTest extends \PHPUnit_Framework_TestCase {
 
       $this->assertEquals($postTitle, $newTitle);
 
-      $postTitle = 'Hello again, world! - ' . uniqid('', true);
+      $postTitle = 'Hello again, world! - ' . uniqid();
 
       $db = new \PDO('mysql:host=localhost;dbname=test', 'lencse', 'lencse');
       $db->exec("UPDATE wptest_posts SET post_title = '$postTitle' WHERE id = 1");
@@ -53,7 +53,7 @@ class MigratorTest extends \PHPUnit_Framework_TestCase {
          'lencse',
          'lencse'
       );
-      $wpm = new Migrator($source, $target);
+      $wpm = new Migrator($source, $target, 'wptest_');
       $wpm->migrate();
 
       $db = new \PDO('mysql:host=localhost;dbname=kahuna', 'lencse', 'lencse');
