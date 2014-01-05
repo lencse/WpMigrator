@@ -40,10 +40,7 @@ abstract class Connection {
    public function exportSql() {
       $dom = new DOMParser($this->curl->post(
             $this->getInstance()->getPhpMyAdminUrl() . 'db_export.php?db=' . $this->getInstance()->getDatabase(),
-            array(
-               'pma_username' => $this->getInstance()->getUserName(),
-               'pma_password' => $this->getInstance()->getPassword(),
-            )
+            $this->getLoginArray()
          ));
       $tableList = $dom->getPrefixedTableList($this->migrator->getTablePrefix());
 
@@ -88,10 +85,7 @@ abstract class Connection {
    public function loadSql($sqlFileName) {
       $this->curl->post(
          $this->getInstance()->getPhpMyAdminUrl() . "server_import.php",
-         array(
-            'pma_username' => $this->getInstance()->getUserName(),
-            'pma_password' => $this->getInstance()->getPassword(),
-         )
+         $this->getLoginArray()
       );
 
       $this->curl->post(
@@ -109,7 +103,16 @@ abstract class Connection {
             'import_file' => '@' . $sqlFileName,
          )
       );
+   }
 
+   /**
+    * @return array
+    */
+   private function getLoginArray() {
+      return array(
+         'pma_username' => $this->getInstance()->getUserName(),
+         'pma_password' => $this->getInstance()->getPassword(),
+      );
    }
 
    /**
