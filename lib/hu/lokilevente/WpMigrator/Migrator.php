@@ -16,24 +16,14 @@ class Migrator {
     */
    private $target;
 
-   function __construct($source, $target)
-   {
+   function __construct($source, $target) {
       $this->source = $source;
       $this->target = $target;
    }
 
    public function migrate() {
-      $sourcePhpMyAdminUrl = 'http://phpmyadmin.local/';
-      $sourceWpUrl = 'http://localhost/wordpress';
-      $sourceUserName = 'lencse';
-      $sourcePassword = 'lencse';
-      $sourceDb = 'kahuna';
-
-      $targetPhpMyAdminUrl = 'http://phpmyadmin.local/';
-      $targetWpUrl = 'http://localhost/wordpress2';
-      $targetUserName = 'lencse';
-      $targetPassword = 'lencse';
-      $targetDb = 'test';
+      $source = $this->source;
+      $target = $this->target;
 
       $tablePrefix = 'wptest_';
 
@@ -42,7 +32,7 @@ class Migrator {
 
       $cookieFileName = dirname(__FILE__) . DIRECTORY_SEPARATOR . 'cookie_dir' . DIRECTORY_SEPARATOR . 'wpm_cookie_' . uniqid();
 
-      $c = curl_init($sourcePhpMyAdminUrl);
+      $c = curl_init($source->getPhpMyAdminUrl());
       curl_setopt($c, CURLOPT_RETURNTRANSFER, true);
       curl_setopt($c, CURLOPT_HEADER, false);
       curl_setopt($c, CURLOPT_COOKIEFILE, $cookieFileName);
@@ -60,10 +50,10 @@ class Migrator {
       }
 
       curl_setopt($c, CURLOPT_POST, true);
-      curl_setopt($c, CURLOPT_POSTFIELDS, ['pma_username' => $sourceUserName, 'pma_password' => $sourcePassword]);
+      curl_setopt($c, CURLOPT_POSTFIELDS, ['pma_username' => $source->getUserName(), 'pma_password' =>$source->getPassword()]);
       curl_setopt($c, CURLOPT_FOLLOWLOCATION, true);
 
-      curl_setopt($c, CURLOPT_URL, $sourcePhpMyAdminUrl . "db_export.php?db=$sourceDb");
+      curl_setopt($c, CURLOPT_URL, $source->getPhpMyAdminUrl() . 'db_export.php?db=' . $source->getDatabase());
       $resp = curl_exec($c);
 
       $doc = new \DOMDocument();
@@ -76,9 +66,9 @@ class Migrator {
          }
       }
 
-      curl_setopt($c, CURLOPT_URL, $sourcePhpMyAdminUrl . "export.php");
+      curl_setopt($c, CURLOPT_URL, $source->getPhpMyAdminUrl() . "export.php");
       curl_setopt($c, CURLOPT_POSTFIELDS, http_build_query(array(
-         'db' => $sourceDb,
+         'db' => $source->getDatabase(),
          'token' => $token,
          'export_type' => 'database',
          'export_method' => 'quick',
@@ -102,7 +92,7 @@ class Migrator {
          'sql_utc_time' => 'something',
       )));
 
-      $sql = str_replace($sourceWpUrl, $targetWpUrl, curl_exec($c));
+      $sql = str_replace($source->getWpUrl(), $target->getWpUrl(), curl_exec($c));
 
       curl_close($c);
 
@@ -112,7 +102,7 @@ class Migrator {
 
       $cookieFileName = dirname(__FILE__) . DIRECTORY_SEPARATOR . 'cookie_dir' . DIRECTORY_SEPARATOR . 'wpm_cookie_' . uniqid();
 
-      $c = curl_init($targetPhpMyAdminUrl);
+      $c = curl_init($target->getPhpMyAdminUrl());
       curl_setopt($c, CURLOPT_RETURNTRANSFER, true);
       curl_setopt($c, CURLOPT_HEADER, false);
       curl_setopt($c, CURLOPT_COOKIEFILE, $cookieFileName);
@@ -128,16 +118,16 @@ class Migrator {
          }
       }
 
-      curl_setopt($c, CURLOPT_URL, $targetPhpMyAdminUrl . "server_import.php");
+      curl_setopt($c, CURLOPT_URL, $target->getPhpMyAdminUrl() . "server_import.php");
       curl_setopt($c, CURLOPT_POST, true);
-      curl_setopt($c, CURLOPT_POSTFIELDS, ['pma_username' => $targetUserName, 'pma_password' => $targetPassword]);
+      curl_setopt($c, CURLOPT_POSTFIELDS, ['pma_username' => $target->getUserName(), 'pma_password' => $target->getPassword()]);
       curl_setopt($c, CURLOPT_FOLLOWLOCATION, true);
 
       curl_exec($c);
 
-      curl_setopt($c, CURLOPT_URL, $targetPhpMyAdminUrl . "import.php");
+      curl_setopt($c, CURLOPT_URL, $target->getPhpMyAdminUrl() . "import.php");
       curl_setopt($c, CURLOPT_POSTFIELDS, array(
-         'db' => $targetDb,
+         'db' => $target->getDatabase(),
          'token' => $token,
          'import_type' => 'database',
          'charset_of_file' => 'utf-8',

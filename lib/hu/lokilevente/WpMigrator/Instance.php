@@ -31,8 +31,7 @@ class Instance {
     */
    private $password;
 
-   function __construct($phpMyAdminUrl, $wpUrl, $database, $username, $password)
-   {
+   function __construct($phpMyAdminUrl, $wpUrl, $database, $username, $password) {
       $this->database = $database;
       $this->password = $password;
       $this->phpMyAdminUrl = $phpMyAdminUrl;
@@ -44,40 +43,35 @@ class Instance {
    /**
     * @return string
     */
-   public function getDatabase()
-   {
+   public function getDatabase() {
       return $this->database;
    }
 
    /**
     * @return string
     */
-   public function getPassword()
-   {
+   public function getPassword() {
       return $this->password;
    }
 
    /**
     * @return string
     */
-   public function getPhpMyAdminUrl()
-   {
+   public function getPhpMyAdminUrl() {
       return $this->phpMyAdminUrl;
    }
 
    /**
     * @return string
     */
-   public function getUsername()
-   {
+   public function getUsername() {
       return $this->username;
    }
 
    /**
     * @return string
     */
-   public function getWpUrl()
-   {
+   public function getWpUrl() {
       return $this->wpUrl;
    }
 
