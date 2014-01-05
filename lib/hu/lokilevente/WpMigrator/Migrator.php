@@ -28,15 +28,12 @@ class Migrator {
    }
 
    public function migrate() {
-      $source = $this->source;
-      $target = $this->target;
-
       libxml_use_internal_errors(true);
 
-      $src = new Connection($source, $this->tablePrefix);
+      $src = new Connection($this->source, $this->tablePrefix);
       $src->exportSql();
 
-      $trgt = new Connection($target, $this->tablePrefix);
+      $trgt = new Connection($this->target, $this->tablePrefix);
       $trgt->loadSql($src->getSqlFileName());
 
       unlink($src->getSqlFileName());
