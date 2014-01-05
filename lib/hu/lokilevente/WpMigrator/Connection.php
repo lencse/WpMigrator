@@ -40,32 +40,19 @@ class Connection {
       $this->tablePrefix = $tablePrefix;
       $this->curl = new Curl();
 
-      $doc = new \DOMDocument();
-      $doc->loadHTML($this->curl->get($this->instance->getPhpMyAdminUrl()));
-
-      foreach ($doc->getElementsByTagName('input') as $input) {
-         if ($input->getAttribute('name') == 'token') {
-            $this->token = $input->getAttribute('value');
-         }
-      }
+      $dom = new DOMParser($this->curl->get($this->instance->getPhpMyAdminUrl()));
+      $this->token = $dom->getInputValue('token');
    }
 
    public function exportSql() {
-      $doc = new \DOMDocument();
-      $doc->loadHTML($this->curl->post(
+      $dom = new DOMParser($this->curl->post(
             $this->instance->getPhpMyAdminUrl() . 'db_export.php?db=' . $this->instance->getDatabase(),
             array(
                'pma_username' => $this->instance->getUserName(),
                'pma_password' => $this->instance->getPassword(),
             )
          ));
-
-      $tableList = [];
-      foreach ($doc->getElementById('table_select')->getElementsByTagName('option') as $option) {
-         if (preg_match('/^' . $this->tablePrefix . '/i', $option->getAttribute('value'))) {
-            $tableList[] = $option->getAttribute('value');
-         }
-      }
+      $tableList = $dom->getPrefixedTableList($this->tablePrefix);
 
       $resp = $this->curl->post(
             $this->instance->getPhpMyAdminUrl() . 'export.php',

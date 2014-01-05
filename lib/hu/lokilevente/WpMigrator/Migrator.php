@@ -28,8 +28,6 @@ class Migrator {
    }
 
    public function migrate() {
-      libxml_use_internal_errors(true);
-
       $src = new Connection($this->source, $this->tablePrefix);
       $src->exportSql();
 
