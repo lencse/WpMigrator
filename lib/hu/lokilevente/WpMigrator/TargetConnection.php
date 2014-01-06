@@ -11,9 +11,9 @@ class TargetConnection extends Connection{
    }
 
    /**
-    * @param SqlFile $sql
+    * @param File $sql
     */
-   public function loadSql(SqlFile $sql) {
+   public function loadSql(File $sql) {
       $this->curl->post(
          $this->getInstance()->getPhpMyAdminUrl() . "server_import.php",
          $this->getLoginArray()

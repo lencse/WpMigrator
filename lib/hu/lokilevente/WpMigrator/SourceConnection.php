@@ -7,7 +7,7 @@ namespace hu\lokilevente\WpMigrator;
 class SourceConnection extends Connection{
 
    /**
-    * @return SqlFile
+    * @return File
     */
    public function exportSql() {
       $dom = new DOMParser($this->curl->post(
@@ -45,15 +45,7 @@ class SourceConnection extends Connection{
       );
 
       $sql = str_replace($this->migrator->getSource()->getWpUrl(), $this->migrator->getTarget()->getWpUrl(), $resp);
-      return new SqlFile($sql);
-   }
-
-
-   /**
-    * @return string
-    */
-   public function getSqlFileName() {
-      return $this->sqlFileName;
+      return new File($sql);
    }
 
    protected function getInstance() {
