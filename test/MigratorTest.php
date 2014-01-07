@@ -1,7 +1,7 @@
 <?php
 
 
-namespace hu\lokilevente\WpMigrator;
+namespace Lencse\WpMigrator;
 
 
 class TestInstance {

@@ -1,7 +1,7 @@
 <?php
 
 
-namespace hu\lokilevente\WpMigrator;
+namespace Lencse\WpMigrator;
 
 
 class Migrator {
@@ -35,7 +35,7 @@ class Migrator {
    }
 
    /**
-    * @return \hu\lokilevente\WpMigrator\Instance
+    * @return \Lencse\WpMigrator\Instance
     */
    public function getTarget() {
       return $this->target;
@@ -49,7 +49,7 @@ class Migrator {
    }
 
    /**
-    * @return \hu\lokilevente\WpMigrator\Instance
+    * @return \Lencse\WpMigrator\Instance
     */
    public function getSource() {
       return $this->source;

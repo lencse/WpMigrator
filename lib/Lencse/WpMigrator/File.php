@@ -1,7 +1,7 @@
 <?php
 
 
-namespace hu\lokilevente\WpMigrator;
+namespace Lencse\WpMigrator;
 
 
 class File {
@@ -17,7 +17,7 @@ class File {
    }
 
    public static function tempFileNameWithFullPath($fileName) {
-      return dirname(__FILE__) . str_repeat(DIRECTORY_SEPARATOR . '..', 4) .
+      return dirname(__FILE__) . str_repeat(DIRECTORY_SEPARATOR . '..', 3) .
          DIRECTORY_SEPARATOR . 'temp' . DIRECTORY_SEPARATOR . $fileName;
    }
 
