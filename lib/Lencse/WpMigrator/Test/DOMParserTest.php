@@ -1,10 +1,12 @@
 <?php
 
 
-namespace Lencse\WpMigrator;
+namespace Lencse\WpMigrator\Test;
+
+use Lencse\WpMigrator\DOMParser as DOMParser;
 
 
-class Test extends \PHPUnit_Framework_TestCase {
+class DOMParserTest extends \PHPUnit_Framework_TestCase {
 
    private static $html = <<<'EOS'
 <!DOCTYPE HTML>
