@@ -23,10 +23,11 @@ abstract class Connection {
 
    /**
     * @param Migrator $migrator
+    * @param Curl $curl
     */
-   public function __construct(Migrator $migrator) {
+   public function __construct(Migrator $migrator, Curl $curl) {
       $this->migrator = $migrator;
-      $this->curl = new Curl();
+      $this->curl = $curl;
 
       $dom = new DOMParser($this->curl->get($this->getInstance()->getPhpMyAdminUrl()));
       $this->token = $dom->getInputValue('token');

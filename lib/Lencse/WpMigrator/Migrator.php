@@ -28,9 +28,9 @@ class Migrator {
    }
 
    public function migrate() {
-      $src = new SourceConnection($this);
+      $src = new SourceConnection($this, new PHPCurl());
       $sql = $src->exportSql();
-      $trgt = new TargetConnection($this);
+      $trgt = new TargetConnection($this, new PHPCurl());
       $trgt->loadSql($sql);
    }
 
